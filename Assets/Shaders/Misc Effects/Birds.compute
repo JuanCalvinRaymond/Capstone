@@ -1,0 +1,210 @@
+﻿/*
+See Birds.shader for info! Not duplicating it here as it will likely change.
+Creator: Charlotte C. Brown
+*/
+#pragma kernel SimulateFlocking
+
+struct SBirdData
+{
+	float3 m_position;
+	float3 m_velocity;
+	float3 m_previousVelocity;
+};
+
+// See CBirds.cs for info on each of these uniforms. Avoiding duplicate info.
+RWStructuredBuffer<SBirdData> u_birdData;
+uniform int u_birdCount;
+uniform float u_deltaTime;
+uniform float4 u_boundingBoxMin;
+uniform float4 u_boundingBoxMax;
+uniform float u_borderForce;
+uniform float u_speed;
+uniform float u_cohesionRadiusSquared;
+uniform float u_cohesionForce;
+uniform float u_maxVelocityChangePercent;
+uniform float u_minimumSeparationSquared;
+uniform float u_alignmentForce;
+uniform float u_avoidanceForce;
+uniform float u_avoidanceRadiusSquared;
+uniform float u_verticalDeviationAmplitude;
+uniform float4 u_weapon1Position;
+uniform float4 u_weapon1Direction;
+uniform float4 u_weapon2Position;
+uniform float4 u_weapon2Direction;
+
+/*
+Calculates the forces to apply in order to keep a point within bounds.
+Creator: Charlotte C. Brown
+*/
+float3 CalculateBorderForces(float3 aPosition)
+{
+	// Calculate if the bird is outside of the minimum or maximum bounds, getting a
+	// result of 1 or 0 for the minimum bounds and -1 or 0 for the maximum bounds.
+	float xMax = step(u_boundingBoxMax.x, aPosition.x) * -1.0f;
+	float xMin = step(aPosition.x, u_boundingBoxMin.x);
+
+	float yMax = step(u_boundingBoxMax.y, aPosition.y) * -1.0f;
+	float yMin = step(aPosition.y, u_boundingBoxMin.y);
+
+	float zMax = step(u_boundingBoxMax.z, aPosition.z) * -1.0f;
+	float zMin = step(aPosition.z, u_boundingBoxMin.z);
+
+	// Add all the results together to figure out if force needs to be applied along
+	// a given axis, and in which direction.
+	float3 borderForces = float3(xMax + xMin, yMax + yMin, zMax + zMin);
+
+	// Calculate the appropriate amount of force.
+	borderForces *= u_borderForce;
+
+	return borderForces;
+}
+
+/*
+Calculates the squared length of a given vector.
+Params:
+    aVector - The vector.
+Return:
+    The squared length of the given vector.
+Creator: Charlotte C. Brown
+*/
+float LengthSquared(float3 aVector)
+{
+	return pow(aVector.x, 2) + pow(aVector.y, 2) + pow(aVector.z, 2);
+}
+
+/*
+Determines if two points are close enough to be considered within the same flock.
+Params:
+    aPosition1, aPosition2 - The two positions to check if are close enough to be in a flock.
+Return:
+    1 if in the same flock, 0 otherwise.
+Creator: Charlotte C. Brown
+*/
+float IsWithinFlock(float3 aPosition1, float3 aPosition2)
+{
+	float3 offset = aPosition2 - aPosition1;
+	float distanceSquared = LengthSquared(offset);
+
+	return step(distanceSquared, u_cohesionRadiusSquared);
+}
+
+/*
+Calculates the force that pushes birds towards the center of the flock. The force is stronger
+the closer birds are to the center of their flock.
+Params:
+    aPosition - The position of the bird.
+    aFlockCenter - The center of the bird's flock.
+Return:
+    The force to push the bird towards the flock's center with.
+Creator: Charlotte C. Brown
+*/
+float3 CalculateCohesionForce(float3 aPosition, float3 aFlockCenter)
+{
+	float3 offset = aFlockCenter - aPosition;
+	float distanceFromCenterSquared = LengthSquared(offset);
+	float cohesionStrength = 1.0 - saturate(distanceFromCenterSquared / u_cohesionRadiusSquared);
+
+	return offset * cohesionStrength * u_cohesionForce;
+}
+
+/*
+Calculates the force to exert in order to keep birds apart from one-another. Without this,
+birds in a flock would be capable of collapsing to a single point.
+Params:
+    aPosition1, aPosition2 - The position of the two birds.
+Return:
+    The force to push the bird away from the other.
+Creator: Charlotte C. Brown
+*/
+float3 CalculateSeparationForce(float3 aPosition1, float3 aPosition2)
+{
+	float3 offset = aPosition1 - aPosition2;
+	float distanceSquared = LengthSquared(offset);
+	float separationStrength = 1.0 - saturate(distanceSquared / u_minimumSeparationSquared);
+
+	return offset * separationStrength * u_cohesionForce;
+}
+
+float3 GetOffsetFromPointToLine(float3 aPosition, float3 aLineDirection, float3 aLineStart)
+{
+    float3 offsetFromStart = aPosition - aLineStart.xyz;
+    float3 offset = aPosition - (aLineDirection * length(offsetFromStart) * dot(aLineDirection, normalize(offsetFromStart)) + aLineStart);
+    return offset;
+}
+
+float3 CalculateWeaponAvoidanceForce(float3 aPosition)
+{
+    float3 avoidanceForce = float3(0, 0, 0);
+
+    float3 offset1 = GetOffsetFromPointToLine(aPosition, u_weapon1Direction.xyz, u_weapon1Position.xyz);
+    float avoidanceStrength1 = 1 - saturate(LengthSquared(offset1) / u_avoidanceRadiusSquared);
+    avoidanceForce += normalize(offset1) * avoidanceStrength1;
+
+    float3 offset2 = GetOffsetFromPointToLine(aPosition, u_weapon2Direction.xyz, u_weapon2Position.xyz);
+    float avoidanceStrength2 = 1 - saturate(LengthSquared(offset2) / u_avoidanceRadiusSquared);
+    avoidanceForce += normalize(offset2) * avoidanceStrength2;
+
+    return avoidanceForce * u_avoidanceForce;
+}
+
+/*
+Runs a flocking algorithm that attempts to simulate how birds would fly through the sky. It
+can also be used for many other things, though anything else is not the primary goal. Data
+from this is shared with CBirds.cs and Birds.shader in order to fully process and draw birds.
+Creator: Charlotte C. Brown
+*/
+[numthreads(8,1,1)]
+void SimulateFlocking(uint aIndex : SV_DispatchThreadID)
+{
+	// Get the original bird.
+	SBirdData bird = u_birdData[aIndex];
+
+	// Get the bird's current velocity.
+	float3 previousVelocity = bird.m_velocity;
+	float3 newVelocity = bird.m_velocity;
+
+	// The average of the flock's position and number of birds in this flock.
+	float3 flockAveragePosition = float3(0, 0, 0);
+	float3 flockAverageVelocity = float3(0, 0, 0);
+	float flockBirdCount = 0;
+
+	for (int i = 0; i < u_birdCount; i++)
+	{
+		// Get the current bird to test.
+		SBirdData otherBird = u_birdData[i];
+
+		// Check if the given bird is in the flock. Add its position and velocity if it is.
+		float isInFlock = IsWithinFlock(bird.m_position, otherBird.m_position);
+		flockAveragePosition += isInFlock * otherBird.m_position;
+		flockAverageVelocity += isInFlock * otherBird.m_velocity;
+		flockBirdCount += isInFlock;
+
+		// Don't get too close to other birds.
+		newVelocity += isInFlock * CalculateSeparationForce(bird.m_position, otherBird.m_position) * u_deltaTime;
+
+        // Run away FROM THE GUUUUNNNNSSS NUUUUUUUUUUUU Y YOU DO DISSSS!!!!!
+        newVelocity += CalculateWeaponAvoidanceForce(bird.m_position) * u_deltaTime;
+	}
+
+	// Get the average flock position, velocity and steer slightly towards it.
+	flockAveragePosition /= flockBirdCount;
+	flockAverageVelocity /= flockBirdCount;
+	newVelocity += CalculateCohesionForce(bird.m_position, flockAveragePosition) * u_deltaTime;
+	newVelocity += (flockAverageVelocity - previousVelocity) * u_alignmentForce * u_deltaTime;
+
+    // Add border forces to the velocity.
+    newVelocity += CalculateBorderForces(bird.m_position) * u_deltaTime;
+
+    // Limit how quickly the bird can change altitudes (birds don't ascend/descend that often or quickly).
+    newVelocity.y *= u_verticalDeviationAmplitude;
+
+	// Normalize the bird's velocity and lerp the result velocity between the bird's previous and new velocities.
+	newVelocity = normalize(newVelocity) * u_speed;
+	newVelocity = lerp(previousVelocity, newVelocity, u_maxVelocityChangePercent * u_deltaTime);
+
+	// Set final velocity, position and output.
+    bird.m_velocity = newVelocity;
+    bird.m_previousVelocity = previousVelocity;
+	bird.m_position += bird.m_velocity * u_deltaTime;
+	u_birdData[aIndex] = bird;
+}

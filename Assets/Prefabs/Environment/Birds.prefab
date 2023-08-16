@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1000011934775936}
+  m_IsPrefabParent: 1
+--- !u!1 &1000011934775936
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 4000010686993438}
+  - 114: {fileID: 114000010486317460}
+  m_Layer: 0
+  m_Name: Birds
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4000010686993438
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000011934775936}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 105.4, y: 232.2, z: 146.9}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+--- !u!114 &114000010486317460
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000011934775936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adda8f3e825197048b6c10e492b240e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_flockingComputeShader: {fileID: 7200000, guid: 1d8ef0e9b950afe42b97c7c0bb357aa3,
+    type: 3}
+  m_flockingKernelName: SimulateFlocking
+  m_birdCountMultiplier: 3
+  m_flockingUpdatesPerSecond: 30
+  m_gizmoColour: {r: 1, g: 0, b: 0, a: 1}
+  m_showGizmo: 0
+  m_birdGizmoSize: 7.74
+  m_flockingAreaSize: {x: 250, y: 150, z: 350}
+  m_speed: 15
+  m_borderForce: 750
+  m_maxVelocityChangePercent: 0.33
+  m_verticalDeviationAmplitude: 0.1
+  m_cohesionForce: 100
+  m_preSimulationSeconds: 30
+  m_cohesionRadiusSquared: 900
+  m_minimumSeparationSquared: 100
+  m_alignmentForce: 50
+  m_avoidanceForce: 30
+  m_avoidanceRadiusSquared: 900
+  m_birdMaterial: {fileID: 2100000, guid: ef0ae380bb9550640b6b973e9f369032, type: 2}

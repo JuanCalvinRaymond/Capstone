@@ -1,0 +1,6 @@
+D:\GAM1560_S2_A1_ChavezMixco_Alvaro\Lib_Easing\Lib_Easing\bin\Release\Lib_Easing.dll
+D:\GAM1560_S2_A1_ChavezMixco_Alvaro\Lib_Easing\Lib_Easing\bin\Release\Lib_Easing.pdb
+D:\GAM1560_S2_A1_ChavezMixco_Alvaro\Lib_Easing\Lib_Easing\bin\Release\UnityEngine.dll
+D:\GAM1560_S2_A1_ChavezMixco_Alvaro\Lib_Easing\Lib_Easing\bin\Release\UnityEngine.xml
+D:\GAM1560_S2_A1_ChavezMixco_Alvaro\Lib_Easing\Lib_Easing\obj\Release\Lib_Easing.dll
+D:\GAM1560_S2_A1_ChavezMixco_Alvaro\Lib_Easing\Lib_Easing\obj\Release\Lib_Easing.pdb

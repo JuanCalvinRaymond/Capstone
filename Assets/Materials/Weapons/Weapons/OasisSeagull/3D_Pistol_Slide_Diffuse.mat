@@ -1,0 +1,229 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 3D_Pistol_Slide_Diffuse
+  m_Shader: {fileID: 4800000, guid: 7baef28336731234fae236d35fd8ba75, type: 3}
+  m_ShaderKeywords: _EMISSION
+  m_LightmapFlags: 1
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  m_SavedProperties:
+    serializedVersion: 2
+    m_TexEnvs:
+    - first:
+        name: _BumpMap
+      second:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - first:
+        name: _DetailAlbedoMap
+      second:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - first:
+        name: _DetailMask
+      second:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - first:
+        name: _DetailNormalMap
+      second:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - first:
+        name: _EmissionMap
+      second:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - first:
+        name: _MainTex
+      second:
+        m_Texture: {fileID: 2800000, guid: 70059558ecbf14840bf92df656a99d31, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - first:
+        name: _MetallicGlossMap
+      second:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - first:
+        name: _OcclusionMap
+      second:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - first:
+        name: _ParallaxMap
+      second:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - first:
+        name: u_auxMap
+      second:
+        m_Texture: {fileID: 2800000, guid: cbfd774184bd31a489184d6b4a6936d7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - first:
+        name: u_normalMap
+      second:
+        m_Texture: {fileID: 2800000, guid: 6c46fdc799b142c4d9f368ae20fa564c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - first:
+        name: u_reflectionCubemap
+      second:
+        m_Texture: {fileID: 8900000, guid: a04a15384f90d2d419124ad8906187f3, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - first:
+        name: _BumpScale
+      second: 1
+    - first:
+        name: _Cutoff
+      second: 0.5
+    - first:
+        name: _DetailNormalMapScale
+      second: 1
+    - first:
+        name: _DstBlend
+      second: 0
+    - first:
+        name: _GlossMapScale
+      second: 1
+    - first:
+        name: _Glossiness
+      second: 0
+    - first:
+        name: _GlossyReflections
+      second: 1
+    - first:
+        name: _Metallic
+      second: 0
+    - first:
+        name: _Mode
+      second: 0
+    - first:
+        name: _OcclusionStrength
+      second: 1
+    - first:
+        name: _Parallax
+      second: 0.02
+    - first:
+        name: _SmoothnessTextureChannel
+      second: 0
+    - first:
+        name: _SpecularHighlights
+      second: 1
+    - first:
+        name: _SrcBlend
+      second: 1
+    - first:
+        name: _UVSec
+      second: 0
+    - first:
+        name: _ZWrite
+      second: 1
+    - first:
+        name: u_AOLevel
+      second: 1.5
+    - first:
+        name: u_baseColourLevel
+      second: 0
+    - first:
+        name: u_desaturationEnd
+      second: 0.5
+    - first:
+        name: u_desaturationExponent
+      second: 1
+    - first:
+        name: u_desaturationStart
+      second: 0.3
+    - first:
+        name: u_diffuseLevel
+      second: 1
+    - first:
+        name: u_dissolveBottomDistance
+      second: 0
+    - first:
+        name: u_dissolveFarDistance
+      second: 0.2
+    - first:
+        name: u_dissolveNearDistance
+      second: 0.2
+    - first:
+        name: u_edgeSensitivity
+      second: 0.03
+    - first:
+        name: u_edgeSize
+      second: 0.15
+    - first:
+        name: u_edgeWeight
+      second: 1
+    - first:
+        name: u_invSpecularExponent
+      second: 5
+    - first:
+        name: u_invSpecularLevel
+      second: 0.05
+    - first:
+        name: u_inverseAO
+      second: 0
+    - first:
+        name: u_minimumDiffuse
+      second: 0.025
+    - first:
+        name: u_minimumLighting
+      second: 0.1
+    - first:
+        name: u_normalMapLevel
+      second: 1
+    - first:
+        name: u_reflectionDarkenAmount
+      second: 0.025
+    - first:
+        name: u_reflectionLevel
+      second: 0.3
+    - first:
+        name: u_rimExponent
+      second: 10
+    - first:
+        name: u_rimLevel
+      second: 0.05
+    - first:
+        name: u_saturationMaximum
+      second: 1.5
+    - first:
+        name: u_saturationMinimum
+      second: 0
+    - first:
+        name: u_specularExponent
+      second: 30
+    - first:
+        name: u_specularLevel
+      second: 1
+    m_Colors:
+    - first:
+        name: _Color
+      second: {r: 0.588, g: 0.588, b: 0.588, a: 1}
+    - first:
+        name: _EmissionColor
+      second: {r: 0, g: 0, b: 0, a: 0}
+    - first:
+        name: u_baseColour
+      second: {r: 0, g: 0, b: 0, a: 0}
+    - first:
+        name: u_edgeColour
+      second: {r: 0, g: 0, b: 0, a: 1}
